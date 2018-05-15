@@ -151,13 +151,23 @@ minPath = 10000
 minPathId = 0
 import random
 
+def manhattan(a, b):
+    w = float(allNodes[a]["w"])
+    h = float(allNodes[a]["h"])
+    w2 = float(allNodes[b]["w"])
+    h2 = float(allNodes[b]["h"])
+    return (math.fabs(w - w2)+math.fabs(h - h2))
+
 point = int(random.randrange(0, len(highwayNode)))
 count = 0
 for i in shops:
     if count < 10:
         shop = shops[i]
-        paths.append(dijkstra_path(G, nodes[point], shop["highwayId"]))
-        pathLen = dijkstra_path_length(G, nodes[point], shop["highwayId"])
+        # astar_path(G, nodes[point], shop["highwayId"], manhattan)
+        paths.append(astar_path(G, nodes[point], shop["highwayId"], manhattan))
+        pathLen = astar_path_length(G, nodes[point], shop["highwayId"], manhattan)
+        # paths.append(dijkstra_path(G, nodes[point], shop["highwayId"]))
+        # pathLen = dijkstra_path_length(G, nodes[point], shop["highwayId"])
         print(pathLen*3*60)
         if pathLen < minPath:
             minPath = pathLen
@@ -218,7 +228,7 @@ for a in range(0,10):
             shop = shops[i]
             pathLen = dijkstra_path(G, nodes[point], shop["highwayId"])
         count = count + 1
-print("--- %s seconds ---" % (time.time() - start_time))
+print("dijkstra_path --- %s seconds ---" % (time.time() - start_time))
 
 def Euc(a, b):
     w = float(allNodes[a]["w"])
@@ -236,15 +246,9 @@ for a in range(0,10):
             shop = shops[i]
             pathLen = nx.astar_path(G, nodes[point], shop["highwayId"], Euc)
         count = count + 1
-print("--- %s seconds ---" % (time.time() - start_time))
+print("astar_path Euc--- %s seconds ---" % (time.time() - start_time))
 
 
-def manhattan(a, b):
-    w = float(allNodes[a]["w"])
-    h = float(allNodes[a]["h"])
-    w2 = float(allNodes[b]["w"])
-    h2 = float(allNodes[b]["h"])
-    return (math.fabs(w - w2)+math.fabs(h - h2))
 import time
 start_time = time.time()
 for a in range(0,10):   
@@ -255,7 +259,7 @@ for a in range(0,10):
             shop = shops[i]
             pathLen = nx.astar_path(G, nodes[point], shop["highwayId"], manhattan)
         count = count + 1
-print("--- %s seconds ---" % (time.time() - start_time))
+print("astar_path manhattan--- %s seconds ---" % (time.time() - start_time))
 
 
 def cheb(a, b):
@@ -274,7 +278,7 @@ for a in range(0,10):
             shop = shops[i]
             pathLen = nx.astar_path(G, nodes[point], shop["highwayId"], cheb)
         count = count + 1
-print("--- %s seconds ---" % (time.time() - start_time))
+print("astar_path cheb--- %s seconds ---" % (time.time() - start_time))
 
 
 start_time = time.time()
@@ -315,4 +319,110 @@ for a in range(0,10):
             shop = shops[i]
         count = count + 1
 
+print("astar_path Levith--- %s seconds ---" % (time.time() - start_time))
+
+
+
+
+# print(shops[1236954369])
+
+import time
+start_time = time.time()
+
+G2 = nx.Graph()
+# for i in range(0,10):
+#     G2.add_vertex()
+#     for j in highwayNode[i]:
+#         w = float(allNodes[i]["w"])
+#         h = float(allNodes[i]["h"])
+#         w2 = float(allNodes[j]["w"])
+#         h2 = float(allNodes[j]["h"])
+#         G.add_edge(i, j, weight = math.sqrt((w-w2)*(w-w2)+(h-h2)*(h-h2)))
+      
+count = 0
+ddel = []
+for i in shops:
+    if count >= 10:
+        ddel.append(i)
+    count = count + 1
+for i in ddel:
+    shops.pop(i)
+    
+# print(shops)
+left = []
+for i in shops:
+    left.append(shops[i]["highwayId"])
+    count = 0
+    shop1 = shops[i]
+#     point = int(random.randrange(0, len(highwayNode)))
+    for j in shops:
+        shop2 = shops[j]
+#             pathLen = dijkstra_path(G, nodes[point], shop["highwayId"])
+        pathLen = nx.astar_path_length(G, shop1["highwayId"], shop2["highwayId"], manhattan)
+#             print(dijkstra_path_length(G, nodes[point], shop["highwayId"]))
+#         print(pathLen)
+        G2.add_edge(shop1["highwayId"], shop2["highwayId"], weight = pathLen)
+    count = count + 1
+#     print(a)
 print("--- %s seconds ---" % (time.time() - start_time))
+
+
+path = []
+path.append(left[0])
+pathLen = 0
+# print(list(G2.nodes))
+print(left)
+for i in range(0,9):
+    minPath = G2[left[0]][path[-1]]['weight']
+    node = left[0]
+    for j in left:
+        if G2[j][path[-1]]['weight'] < minPath:
+            minPath = G2[j][path[-1]]['weight']
+            node = j
+    pathLen = pathLen + minPath
+    path.append(node)
+    left.remove(node)
+pathLen = pathLen + G2[path[0]][path[-1]]['weight']
+print(path)
+print(pathLen)
+
+
+class pathDraw(Frame):
+    def __init__(self, parent):
+        Frame.__init__(self, parent)   
+        self.parent = parent        
+        self.initUI()
+        
+    def initUI(self):
+        self.parent.title("Lines")        
+        self.pack(fill=BOTH, expand=1)
+
+        canvas = Canvas(self)        
+        for a in range(0,len(lines)):
+            line = lines[a]
+            canvas.create_line([line["x1"], line["y1"]], [line["x2"], line["y2"]])
+            
+        count = 1
+        for i in range(0,10):
+            pathh = nx.dijkstra_path(G, path[i-1], path[i])
+            for a in range(0,len(pathh)-1):
+                line = {}
+                resize = 5000
+                currentNode = allNodes[pathh[a]]
+                nextNode = allNodes[pathh[a+1]]
+                left = 44.7240
+                bottom = 48.7435
+                line["y1"] = 500-int((float(currentNode["h"])-bottom)*resize)
+                line["x1"] = int((float(currentNode["w"])-left)*resize)
+                line["y2"] = 500-int((float(nextNode["h"])-bottom)*resize)
+                line["x2"] = int((float(nextNode["w"])-left)*resize)
+                canvas.create_line([line["x1"], line["y1"]], [line["x2"], line["y2"]],fill="red",width = count)
+            count = count + 1
+        
+        canvas.pack(fill=BOTH, expand=1)
+root4= Tk()
+root4.geometry("800x500+600+600")
+
+ex4= pathDraw(root4)
+
+root4.mainloop()  
