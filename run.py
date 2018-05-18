@@ -538,7 +538,7 @@ for i in range(0,9):
     left.remove(node)
 pathLen = pathLen + G2[path[0]][path[-1]]['weight']
 print(path)
-print(pathLen)
+print(int(pathLen*10000))
 
 
 class pathDraw(Frame):
