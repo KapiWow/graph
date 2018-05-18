@@ -366,6 +366,160 @@ for i in shops:
 #     print(a)
 print("--- %s seconds ---" % (time.time() - start_time))
 
+import copy
+path = []
+path.append(left[0])
+pathLen = 0
+# print(list(G2.nodes))
+leafs = []
+leaf = {}
+leaf['matrix'] = []
+count = 0
+maxInt = 1000000000
+
+
+leaf['strMin'] = range(0,10)
+leaf['colMin'] = range(0,10)
+kk = []
+for i in list(G2.nodes):
+    leaf['matrix'].append([])
+    for j in list(G2.nodes):
+        leaf['matrix'][count].append(int(10000*G2[i][j]['weight']))
+    leaf['matrix'][count][count] = maxInt
+    count = count + 1
+
+for i in leaf['matrix']:
+    print(i)
+S = 0
+
+kk = copy.deepcopy(leaf['matrix'])
+
+for i in range(0,len(list(G2.nodes))):
+    minV = leaf['matrix'][0][i]
+    for j in range(1,len(list(G2.nodes))):
+        minV = min(minV,leaf['matrix'][j][i])
+    for j in range(0,len(list(G2.nodes))):        
+        leaf['matrix'][j][i] = leaf['matrix'][j][i] - minV
+#     leaf['colMin'][i] = minV
+    S = S + minV
+for i in range(0,len(list(G2.nodes))):
+    minV = leaf['matrix'][i][0]
+    for j in range(1,len(list(G2.nodes))):
+        minV = min(minV,leaf['matrix'][i][j])
+    for j in range(0,len(list(G2.nodes))):        
+        leaf['matrix'][i][j] = leaf['matrix'][i][j] - minV
+#     leaf['strMin'][i] = minV
+    S = S + minV   
+    
+# for i in range(0,len(list(G2.nodes))):
+#     minV = leaf['matrix'][0][i]
+#     for j in range(1,len(list(G2.nodes))):
+#         if leaf['matrix'][j][i]>0:
+#             minV = min(minV,leaf['matrix'][j][i])
+#     leaf['colMin'][i] = minV
+path2 = []
+nn=[]
+
+leaf = {}
+leaf['matrix'] = []
+count = 0
+maxInt = 1000000000
+
+
+leaf['strMin'] = range(0,10)
+leaf['colMin'] = range(0,10)
+kk = []
+for i in list(G2.nodes):
+    leaf['matrix'].append([])
+    for j in list(G2.nodes):
+        leaf['matrix'][count].append(int(10000*G2[i][j]['weight']))
+    leaf['matrix'][count][count] = maxInt
+    count = count + 1
+
+# for i in leaf['matrix']:
+#     print(i)
+S = 0
+
+kk = copy.deepcopy(leaf['matrix'])
+kk2 = copy.deepcopy(kk)
+
+
+for k in range(0,9):
+    # print(nn)
+    mm = maxInt
+    xx = 0
+    yy = 0
+#     print(k)
+#     for i in kk2:
+#         print(i)
+    for i in range(0,10):
+        for j in range(0,10):
+            if kk2[i][j]<mm:
+                mm = kk2[i][j]
+                xx = i
+                yy = j
+    if len(nn) == 0:
+        nn.append([])
+        nn[0].append(xx)
+        nn[0].append(yy)
+    else:
+        ff = False
+        xxx = []
+        yyy = []
+        for aa in nn:
+            if xx in aa:
+                ff = True
+                xxx = aa
+            if yy in aa:
+                yyy = aa
+                ff = True
+        
+        if len(xxx)>0 and len(yyy)>0:
+            for pp in xxx:
+                yyy.append(pp)
+            nn.remove(xxx)
+        else:    
+            if ff:
+                if len(xxx)>0:
+                    xxx.append(yy)
+                if len(yyy)>0:
+                    yyy.append(xx)         
+#             if xx in aa or yy in aa:
+#                 ff = True
+#                 if not(yy in aa):
+#                     aa.append(yy)
+#                 if not(xx in aa):
+#                     aa.append(xx)
+                
+        if not(ff):
+            nn.append([xx,yy])
+#         if not(yy in nn):
+#             nn.append(yy)
+    path2.append([xx,yy])
+    for aa in range(0,10):
+        kk2[xx][aa] = maxInt
+    for aa in range(0,10):
+        kk2[aa][yy] = maxInt
+    for aa in nn:
+        for i in aa:
+            for j in aa:
+                kk2[i][j]=maxInt
+print("path2") 
+
+strI = range(0,10)
+colI = range(0,10)
+
+for i in path2:
+    strI.remove(i[0])
+    colI.remove(i[1])
+
+path2.append([strI[0],colI[0]])
+print(path2)
+
+Sum = 0
+for i in path2:
+    Sum += kk[i[0]][i[1]]
+print(Sum)
 
 path = []
 path.append(left[0])
