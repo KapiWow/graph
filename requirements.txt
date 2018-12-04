@@ -1,0 +1,8 @@
+lxml
+networkx
+math
+random
+Tkinter
+time
+copy
+
