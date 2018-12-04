@@ -1,0 +1,11 @@
+image: ubuntu
+
+install:
+- pip install -r requirements.txt
+- sudo apt-get install python-tk
+
+test_script:
+- python2 test.py
+
+build: off
+
