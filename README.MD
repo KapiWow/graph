@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/KapiWow/graph.svg?branch=master)](https://travis-ci.org/KapiWow/graph)
 [![Build status](https://ci.appveyor.com/api/projects/status/0wslyu1ms5tpdcg1?svg=true)](https://ci.appveyor.com/project/KapiWow/graph)
 
 1. С сайта скачал данные о городе, записал в map.xml
