@@ -7,4 +7,4 @@ install:
   - sudo apt-get install python-tk
 #  - pip install .
 # command to run tests
-script: run.py
+script: python2 run.py
