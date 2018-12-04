@@ -175,44 +175,6 @@ for i in shops:
     count = count + 1
 print minPathId
 
-from Tkinter import Tk, Canvas, Frame, BOTH
-#отрисовка всей карты и выделение путей до магазинов 
-class pathDraw(Frame):
-    def __init__(self, parent):
-        Frame.__init__(self, parent)   
-        self.parent = parent        
-        self.initUI()
-        
-    def initUI(self):
-        self.parent.title("Lines")        
-        self.pack(fill=BOTH, expand=1)
-
-        canvas = Canvas(self)        
-        for a in range(0,len(lines)):
-            line = lines[a]
-            canvas.create_line([line["x1"], line["y1"]], [line["x2"], line["y2"]])
-            
-        count = 0
-        for path in paths:
-            for a in range(0,len(path)-1):
-                line = {}
-                resize = 5000
-                currentNode = allNodes[path[a]]
-                nextNode = allNodes[path[a+1]]
-                left = 44.7240
-                bottom = 48.7435
-                line["y1"] = 500-int((float(currentNode["h"])-bottom)*resize)
-                line["x1"] = int((float(currentNode["w"])-left)*resize)
-                line["y2"] = 500-int((float(nextNode["h"])-bottom)*resize)
-                line["x2"] = int((float(nextNode["w"])-left)*resize)
-                if count == minPathId:
-                    canvas.create_line([line["x1"], line["y1"]], [line["x2"], line["y2"]],fill="red",width = 4)
-                else:
-                    canvas.create_line([line["x1"], line["y1"]], [line["x2"], line["y2"]],fill="blue",width = 1)
-            count = count + 1
-        
-        canvas.pack(fill=BOTH, expand=1)
-
 import time
 start_time = time.time()
 for a in range(0,10):   
@@ -534,38 +496,3 @@ for i in range(0,9):
 pathLen = pathLen + G2[path[0]][path[-1]]['weight']
 print(path)
 print(int(pathLen*10000))
-
-
-class pathDraw(Frame):
-    def __init__(self, parent):
-        Frame.__init__(self, parent)   
-        self.parent = parent        
-        self.initUI()
-        
-    def initUI(self):
-        self.parent.title("Lines")        
-        self.pack(fill=BOTH, expand=1)
-
-        canvas = Canvas(self)        
-        for a in range(0,len(lines)):
-            line = lines[a]
-            canvas.create_line([line["x1"], line["y1"]], [line["x2"], line["y2"]])
-            
-        count = 1
-        for i in range(0,10):
-            pathh = nx.dijkstra_path(G, path[i-1], path[i])
-            for a in range(0,len(pathh)-1):
-                line = {}
-                resize = 5000
-                currentNode = allNodes[pathh[a]]
-                nextNode = allNodes[pathh[a+1]]
-                left = 44.7240
-                bottom = 48.7435
-                line["y1"] = 500-int((float(currentNode["h"])-bottom)*resize)
-                line["x1"] = int((float(currentNode["w"])-left)*resize)
-                line["y2"] = 500-int((float(nextNode["h"])-bottom)*resize)
-                line["x2"] = int((float(nextNode["w"])-left)*resize)
-                canvas.create_line([line["x1"], line["y1"]], [line["x2"], line["y2"]],fill="red",width = count)
-            count = count + 1
-        
-        canvas.pack(fill=BOTH, expand=1)
