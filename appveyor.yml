@@ -5,7 +5,7 @@ install:
 - pip install --user -r requirements.txt
 
 test_script:
-- python2 test.py
+- python test.py
 
 build: off
 
